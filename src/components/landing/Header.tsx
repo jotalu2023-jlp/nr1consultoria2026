@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Shield } from "lucide-react";
+import { Menu, X, Shield, Settings } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -54,9 +58,23 @@ export const Header = () => {
                 Materiais
               </Button>
             </Link>
-            <Link to="/auth">
-              <Button size="sm">Entrar</Button>
-            </Link>
+            {isAdmin && (
+              <Link to="/admin">
+                <Button variant="outline" size="sm">
+                  <Settings className="h-4 w-4 mr-1" />
+                  Admin
+                </Button>
+              </Link>
+            )}
+            {user ? (
+              <Button size="sm" variant="ghost" onClick={signOut}>
+                Sair
+              </Button>
+            ) : (
+              <Link to="/auth">
+                <Button size="sm">Entrar</Button>
+              </Link>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -101,9 +119,23 @@ export const Header = () => {
                   Materiais
                 </Button>
               </Link>
-              <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full">Entrar</Button>
-              </Link>
+              {isAdmin && (
+                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="outline" className="w-full">
+                    <Settings className="h-4 w-4 mr-1" />
+                    Admin
+                  </Button>
+                </Link>
+              )}
+              {user ? (
+                <Button className="w-full" variant="ghost" onClick={() => { signOut(); setIsMenuOpen(false); }}>
+                  Sair
+                </Button>
+              ) : (
+                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="w-full">Entrar</Button>
+                </Link>
+              )}
             </div>
           </nav>
         )}

@@ -5,13 +5,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, ArrowLeft, Download, FileText, LogOut, Loader2 } from "lucide-react";
+import { Shield, ArrowLeft, Download, FileText, LogOut, Loader2, Video, Play } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface Document {
   id: string;
   title: string;
   description: string | null;
   file_path: string;
+  file_type: string | null;
   file_size: number | null;
   category: string | null;
   created_at: string;
@@ -69,19 +71,12 @@ const Downloads = () => {
         document_id: doc.id,
       });
 
-      // Get the file URL from storage
-      const { data } = supabase.storage
-        .from("documents")
-        .getPublicUrl(doc.file_path);
-
-      if (data?.publicUrl) {
-        // Open in new tab or download
-        window.open(data.publicUrl, "_blank");
-        toast({
-          title: "Download iniciado",
-          description: `${doc.title} está sendo baixado.`,
-        });
-      }
+      // Open the file URL directly (it's already a public URL)
+      window.open(doc.file_path, "_blank");
+      toast({
+        title: "Download iniciado",
+        description: `${doc.title} está sendo baixado.`,
+      });
     } catch (error) {
       console.error("Error downloading:", error);
       toast({
@@ -104,6 +99,9 @@ const Downloads = () => {
     const mb = bytes / (1024 * 1024);
     return mb >= 1 ? `${mb.toFixed(1)} MB` : `${(bytes / 1024).toFixed(0)} KB`;
   };
+
+  const pdfs = documents.filter(d => d.file_type !== "video");
+  const videos = documents.filter(d => d.file_type === "video");
 
   if (loading) {
     return (
@@ -161,46 +159,118 @@ const Downloads = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {documents.map((doc) => (
-              <Card key={doc.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <FileText className="h-6 w-6 text-primary" />
-                    </div>
-                    {doc.category && (
-                      <span className="text-xs bg-secondary px-2 py-1 rounded-full">
-                        {doc.category}
-                      </span>
-                    )}
-                  </div>
-                  <CardTitle className="text-lg">{doc.title}</CardTitle>
-                  {doc.description && (
-                    <CardDescription>{doc.description}</CardDescription>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      {formatFileSize(doc.file_size)}
-                    </span>
-                    <Button
-                      size="sm"
-                      onClick={() => handleDownload(doc)}
-                      disabled={downloading === doc.id}
-                    >
-                      {downloading === doc.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      ) : (
-                        <Download className="h-4 w-4 mr-2" />
-                      )}
-                      Baixar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="space-y-8">
+            {/* PDFs Section */}
+            {pdfs.length > 0 && (
+              <section>
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-destructive" />
+                  Documentos PDF ({pdfs.length})
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {pdfs.map((doc) => (
+                    <Card key={doc.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="p-2 bg-destructive/10 rounded-lg">
+                            <FileText className="h-6 w-6 text-destructive" />
+                          </div>
+                          {doc.category && (
+                            <span className="text-xs bg-secondary px-2 py-1 rounded-full capitalize">
+                              {doc.category}
+                            </span>
+                          )}
+                        </div>
+                        <CardTitle className="text-lg">{doc.title}</CardTitle>
+                        {doc.description && (
+                          <CardDescription>{doc.description}</CardDescription>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">
+                            {formatFileSize(doc.file_size)}
+                          </span>
+                          <Button
+                            size="sm"
+                            onClick={() => handleDownload(doc)}
+                            disabled={downloading === doc.id}
+                          >
+                            {downloading === doc.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            ) : (
+                              <Download className="h-4 w-4 mr-2" />
+                            )}
+                            Baixar
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Videos Section */}
+            {videos.length > 0 && (
+              <section>
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <Video className="h-5 w-5 text-primary" />
+                  Vídeos ({videos.length})
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {videos.map((doc) => (
+                    <Card key={doc.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="p-2 bg-primary/10 rounded-lg">
+                            <Video className="h-6 w-6 text-primary" />
+                          </div>
+                          {doc.category && (
+                            <span className="text-xs bg-secondary px-2 py-1 rounded-full capitalize">
+                              {doc.category}
+                            </span>
+                          )}
+                        </div>
+                        <CardTitle className="text-lg">{doc.title}</CardTitle>
+                        {doc.description && (
+                          <CardDescription>{doc.description}</CardDescription>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">
+                            {formatFileSize(doc.file_size)}
+                          </span>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size="sm">
+                                <Play className="h-4 w-4 mr-2" />
+                                Assistir
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl">
+                              <DialogHeader>
+                                <DialogTitle>{doc.title}</DialogTitle>
+                              </DialogHeader>
+                              <div className="aspect-video">
+                                <video
+                                  src={doc.file_path}
+                                  controls
+                                  className="w-full h-full rounded-lg"
+                                >
+                                  Seu navegador não suporta a reprodução de vídeos.
+                                </video>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </main>
