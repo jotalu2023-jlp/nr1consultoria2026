@@ -62,7 +62,7 @@ export const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Contato</h4>
             <ul className="space-y-2 text-sm text-background/70">
-              <li>(11) 99999-9999</li>
+              <li>(31) 99543-8782</li>
               <li>contato@nr1consultoria.com.br</li>
               <li>São Paulo, SP - Brasil</li>
             </ul>

@@ -146,7 +146,7 @@ export const ContactForm = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Telefone</h3>
-                    <p className="text-muted-foreground">(11) 99999-9999</p>
+                    <p className="text-muted-foreground">(31) 99543-8782</p>
                     <p className="text-sm text-muted-foreground">Seg a Sex, 9h às 18h</p>
                   </div>
                 </div>
