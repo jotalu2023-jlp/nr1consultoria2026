@@ -64,7 +64,7 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm text-background/70">
               <li>(31) 99543-8782</li>
               <li>contato@nr1consultoria.com</li>
-              <li>www.nr1consultoria.com</li>
+              <li><a href="https://www.nr1consultoria.com" target="_blank" rel="noopener noreferrer" className="hover:text-background transition-colors">www.nr1consultoria.com</a></li>
               <li>Rua Bolívia 94, Bairro Nações Unidas</li>
               <li>Sabará, MG - Brasil</li>
             </ul>
