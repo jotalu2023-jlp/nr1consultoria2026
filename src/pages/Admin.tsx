@@ -13,7 +13,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/hooks/use-toast";
 import { ArrowLeft, Upload, Trash2, Edit, FileText, Video, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-
+import { getUserFriendlyError } from "@/lib/error-utils";
+import { documentSchema, fileSchema } from "@/lib/validation-schemas";
 interface Document {
   id: string;
   title: string;
@@ -88,10 +89,23 @@ const Admin = () => {
   const handleFileUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!file || !title.trim()) {
+    // Validate form data
+    const docValidation = documentSchema.safeParse({ title, description, category, fileType });
+    if (!docValidation.success) {
       toast({
-        title: "Erro",
-        description: "Preencha o título e selecione um arquivo.",
+        title: "Erro de validação",
+        description: docValidation.error.errors[0]?.message || "Dados inválidos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file
+    const fileValidation = fileSchema.safeParse({ file });
+    if (!fileValidation.success) {
+      toast({
+        title: "Erro de validação",
+        description: fileValidation.error.errors[0]?.message || "Arquivo inválido",
         variant: "destructive",
       });
       return;
@@ -101,12 +115,12 @@ const Admin = () => {
     
     try {
       const bucket = fileType === "video" ? "videos" : "documents";
-      const fileExt = file.name.split(".").pop();
+      const fileExt = file!.name.split(".").pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       
       const { error: uploadError } = await supabase.storage
         .from(bucket)
-        .upload(fileName, file);
+        .upload(fileName, file!);
 
       if (uploadError) throw uploadError;
 
@@ -116,11 +130,11 @@ const Admin = () => {
       const { error: dbError } = await supabase
         .from("documents")
         .insert({
-          title: title.trim(),
-          description: description.trim() || null,
+          title: docValidation.data.title,
+          description: docValidation.data.description,
           file_path: storagePath,
           file_type: fileType,
-          file_size: file.size,
+          file_size: file!.size,
           category,
           is_active: true,
         });
@@ -141,10 +155,11 @@ const Admin = () => {
       
       // Refresh list
       fetchDocuments();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error("Upload error:", error);
       toast({
         title: "Erro",
-        description: error.message || "Erro ao enviar arquivo.",
+        description: getUserFriendlyError(error),
         variant: "destructive",
       });
     } finally {
@@ -178,10 +193,11 @@ const Admin = () => {
       });
       
       fetchDocuments();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error("Delete error:", error);
       toast({
         title: "Erro",
-        description: error.message || "Erro ao excluir documento.",
+        description: getUserFriendlyError(error),
         variant: "destructive",
       });
     }
@@ -212,10 +228,11 @@ const Admin = () => {
       setIsEditDialogOpen(false);
       setEditingDoc(null);
       fetchDocuments();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error("Edit error:", error);
       toast({
         title: "Erro",
-        description: error.message || "Erro ao atualizar documento.",
+        description: getUserFriendlyError(error),
         variant: "destructive",
       });
     }
@@ -236,10 +253,11 @@ const Admin = () => {
       });
       
       fetchDocuments();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error("Toggle error:", error);
       toast({
         title: "Erro",
-        description: error.message || "Erro ao atualizar status.",
+        description: getUserFriendlyError(error),
         variant: "destructive",
       });
     }
