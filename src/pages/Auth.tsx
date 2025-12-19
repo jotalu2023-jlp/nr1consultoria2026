@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, ArrowLeft } from "lucide-react";
-
+import { getUserFriendlyError } from "@/lib/error-utils";
+import { loginSchema, signupSchema } from "@/lib/validation-schemas";
 const Auth = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, loading } = useAuth();
@@ -33,16 +34,27 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate input
+    const validation = loginSchema.safeParse({ email: loginEmail, password: loginPassword });
+    if (!validation.success) {
+      toast({
+        title: "Erro de validação",
+        description: validation.error.errors[0]?.message || "Dados inválidos",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
-    const { error } = await signIn(loginEmail, loginPassword);
+    const { error } = await signIn(validation.data.email, validation.data.password);
 
     if (error) {
+      console.error("Login error:", error);
       toast({
         title: "Erro no login",
-        description: error.message === "Invalid login credentials" 
-          ? "E-mail ou senha incorretos" 
-          : error.message,
+        description: getUserFriendlyError(error),
         variant: "destructive",
       });
     } else {
@@ -59,19 +71,18 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (signupPassword !== signupConfirmPassword) {
-      toast({
-        title: "Erro",
-        description: "As senhas não coincidem.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Validate all signup fields
+    const validation = signupSchema.safeParse({
+      fullName: signupName,
+      email: signupEmail,
+      password: signupPassword,
+      confirmPassword: signupConfirmPassword,
+    });
 
-    if (signupPassword.length < 6) {
+    if (!validation.success) {
       toast({
-        title: "Erro",
-        description: "A senha deve ter pelo menos 6 caracteres.",
+        title: "Erro de validação",
+        description: validation.error.errors[0]?.message || "Dados inválidos",
         variant: "destructive",
       });
       return;
@@ -79,22 +90,15 @@ const Auth = () => {
 
     setIsSubmitting(true);
 
-    const { error } = await signUp(signupEmail, signupPassword, signupName);
+    const { error } = await signUp(validation.data.email, validation.data.password, validation.data.fullName);
 
     if (error) {
-      if (error.message.includes("already registered")) {
-        toast({
-          title: "Erro no cadastro",
-          description: "Este e-mail já está cadastrado.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Erro no cadastro",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
+      console.error("Signup error:", error);
+      toast({
+        title: "Erro no cadastro",
+        description: getUserFriendlyError(error),
+        variant: "destructive",
+      });
     } else {
       toast({
         title: "Cadastro realizado!",
