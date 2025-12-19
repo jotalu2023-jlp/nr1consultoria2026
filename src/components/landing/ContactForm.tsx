@@ -161,7 +161,7 @@ export const ContactForm = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">E-mail</h3>
-                    <p className="text-muted-foreground">contato@nr1consultoria.com.br</p>
+                    <p className="text-muted-foreground">contato@nr1consultoria.com</p>
                     <p className="text-sm text-muted-foreground">Respondemos em até 24h</p>
                   </div>
                 </div>
@@ -176,7 +176,8 @@ export const ContactForm = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Localização</h3>
-                    <p className="text-muted-foreground">São Paulo, SP</p>
+                    <p className="text-muted-foreground">Rua Bolívia 94, Bairro Nações Unidas</p>
+                    <p className="text-muted-foreground">Sabará, MG</p>
                     <p className="text-sm text-muted-foreground">Atendimento em todo Brasil</p>
                   </div>
                 </div>
