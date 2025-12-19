@@ -19,6 +19,48 @@ interface Document {
   created_at: string;
 }
 
+// Video player component that loads signed URL on open
+const VideoPlayer = ({ doc, getSignedUrl }: { doc: Document; getSignedUrl: (path: string) => Promise<string | null> }) => {
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadVideo = async () => {
+      const url = await getSignedUrl(doc.file_path);
+      setVideoUrl(url);
+      setLoading(false);
+    };
+    loadVideo();
+  }, [doc.file_path, getSignedUrl]);
+
+  return (
+    <DialogContent className="max-w-4xl">
+      <DialogHeader>
+        <DialogTitle>{doc.title}</DialogTitle>
+      </DialogHeader>
+      <div className="aspect-video">
+        {loading ? (
+          <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : videoUrl ? (
+          <video
+            src={videoUrl}
+            controls
+            className="w-full h-full rounded-lg"
+          >
+            Seu navegador não suporta a reprodução de vídeos.
+          </video>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
+            <p className="text-muted-foreground">Erro ao carregar vídeo</p>
+          </div>
+        )}
+      </div>
+    </DialogContent>
+  );
+};
+
 const Downloads = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
@@ -61,6 +103,23 @@ const Downloads = () => {
     }
   };
 
+  const getSignedUrl = async (filePath: string): Promise<string | null> => {
+    // Parse path format: bucket/filename
+    const pathParts = filePath.split("/");
+    const bucket = pathParts[0];
+    const fileName = pathParts.slice(1).join("/");
+
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .createSignedUrl(fileName, 3600); // 1 hour expiry
+
+    if (error) {
+      console.error("Error creating signed URL:", error);
+      return null;
+    }
+    return data.signedUrl;
+  };
+
   const handleDownload = async (doc: Document) => {
     setDownloading(doc.id);
 
@@ -71,8 +130,14 @@ const Downloads = () => {
         document_id: doc.id,
       });
 
-      // Open the file URL directly (it's already a public URL)
-      window.open(doc.file_path, "_blank");
+      // Get signed URL for the file
+      const signedUrl = await getSignedUrl(doc.file_path);
+      if (!signedUrl) {
+        throw new Error("Could not generate download URL");
+      }
+
+      // Open the signed URL
+      window.open(signedUrl, "_blank");
       toast({
         title: "Download iniciado",
         description: `${doc.title} está sendo baixado.`,
@@ -249,20 +314,7 @@ const Downloads = () => {
                                 Assistir
                               </Button>
                             </DialogTrigger>
-                            <DialogContent className="max-w-4xl">
-                              <DialogHeader>
-                                <DialogTitle>{doc.title}</DialogTitle>
-                              </DialogHeader>
-                              <div className="aspect-video">
-                                <video
-                                  src={doc.file_path}
-                                  controls
-                                  className="w-full h-full rounded-lg"
-                                >
-                                  Seu navegador não suporta a reprodução de vídeos.
-                                </video>
-                              </div>
-                            </DialogContent>
+                            <VideoPlayer doc={doc} getSignedUrl={getSignedUrl} />
                           </Dialog>
                         </div>
                       </CardContent>

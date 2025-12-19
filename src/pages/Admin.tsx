@@ -110,16 +110,15 @@ const Admin = () => {
 
       if (uploadError) throw uploadError;
 
-      const { data: urlData } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(fileName);
+      // Store the path as bucket/filename for signed URL generation
+      const storagePath = `${bucket}/${fileName}`;
 
       const { error: dbError } = await supabase
         .from("documents")
         .insert({
           title: title.trim(),
           description: description.trim() || null,
-          file_path: urlData.publicUrl,
+          file_path: storagePath,
           file_type: fileType,
           file_size: file.size,
           category,
@@ -157,10 +156,10 @@ const Admin = () => {
     if (!confirm("Tem certeza que deseja excluir este documento?")) return;
 
     try {
-      // Extract file name from URL
-      const bucket = doc.file_type === "video" ? "videos" : "documents";
-      const urlParts = doc.file_path.split("/");
-      const fileName = urlParts[urlParts.length - 1];
+      // Extract bucket and file name from stored path (bucket/filename format)
+      const pathParts = doc.file_path.split("/");
+      const bucket = pathParts[0];
+      const fileName = pathParts.slice(1).join("/");
 
       // Delete from storage
       await supabase.storage.from(bucket).remove([fileName]);
