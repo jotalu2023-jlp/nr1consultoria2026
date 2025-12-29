@@ -64,7 +64,11 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm text-background/70">
               <li>(31) 99543-8782</li>
               <li>contato@nr1consultoria.com</li>
-              <li><a href="https://www.nr1consultoria.com" target="_blank" rel="noopener noreferrer" className="hover:text-background transition-colors">www.nr1consultoria.com</a></li>
+              <li>
+                <a href="https://www.nr1consultoria.online" target="_blank" rel="noopener noreferrer" className="hover:text-background transition-colors">
+                  www.nr1consultoria.online
+                </a>
+              </li>
               <li>Rua Bolívia 94, Bairro Nações Unidas</li>
               <li>Sabará, MG - Brasil</li>
             </ul>
@@ -73,6 +77,9 @@ export const Footer = () => {
 
         <div className="border-t border-background/10 pt-8 text-center text-sm text-background/50">
           <p>© {new Date().getFullYear()} NR1 Consultoria. Todos os direitos reservados.</p>
+          <p className="mt-2">
+            Desenvolvido por <span className="font-semibold">No&Pe - Empreendimentos</span> | (31) 99543-8782 | Belo Horizonte, MG
+          </p>
         </div>
       </div>
     </footer>
