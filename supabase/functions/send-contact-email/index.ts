@@ -59,7 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "NR1 Consultoria <onboarding@resend.dev>",
-        to: ["jotalu2004@yahoo.com.br"],
+        to: ["jotalu2014@gmail.com"],
         subject: "Consultoria sobre NR1 atualizações",
         html: emailHtml,
         reply_to: email,
