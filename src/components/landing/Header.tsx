@@ -53,11 +53,6 @@ export const Header = () => {
             >
               Contato
             </button>
-            <Link to="/downloads">
-              <Button variant="outline" size="sm">
-                Materiais
-              </Button>
-            </Link>
             {isAdmin && (
               <Link to="/admin">
                 <Button variant="outline" size="sm">
@@ -66,14 +61,10 @@ export const Header = () => {
                 </Button>
               </Link>
             )}
-            {user ? (
+            {user && (
               <Button size="sm" variant="ghost" onClick={signOut}>
                 Sair
               </Button>
-            ) : (
-              <Link to="/auth">
-                <Button size="sm">Entrar</Button>
-              </Link>
             )}
           </nav>
 
@@ -114,11 +105,6 @@ export const Header = () => {
               >
                 Contato
               </button>
-              <Link to="/downloads" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="outline" className="w-full">
-                  Materiais
-                </Button>
-              </Link>
               {isAdmin && (
                 <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" className="w-full">
@@ -127,14 +113,10 @@ export const Header = () => {
                   </Button>
                 </Link>
               )}
-              {user ? (
+              {user && (
                 <Button className="w-full" variant="ghost" onClick={() => { signOut(); setIsMenuOpen(false); }}>
                   Sair
                 </Button>
-              ) : (
-                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="w-full">Entrar</Button>
-                </Link>
               )}
             </div>
           </nav>

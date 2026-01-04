@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Shield } from "lucide-react";
 
 export const Footer = () => {
@@ -44,33 +43,16 @@ export const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4">Área do Cliente</h4>
-            <ul className="space-y-2 text-sm text-background/70">
-              <li>
-                <Link to="/auth" className="hover:text-background transition-colors">
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/downloads" className="hover:text-background transition-colors">
-                  Materiais
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
             <h4 className="font-semibold mb-4">Contato</h4>
             <ul className="space-y-2 text-sm text-background/70">
               <li>(31) 99543-8782</li>
-              <li>contato@nr1consultoria.com</li>
+              <li>jotalu2014@gmail.com</li>
               <li>
                 <a href="https://www.nr1consultoria.online" target="_blank" rel="noopener noreferrer" className="hover:text-background transition-colors">
                   www.nr1consultoria.online
                 </a>
               </li>
-              <li>Rua Bolívia 94, Bairro Nações Unidas</li>
-              <li>Sabará, MG - Brasil</li>
+              <li>Belo Horizonte, MG - Brasil</li>
             </ul>
           </div>
         </div>

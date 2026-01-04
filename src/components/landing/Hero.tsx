@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Users, Brain } from "lucide-react";
 
@@ -40,11 +39,6 @@ export const Hero = () => {
                 Solicitar Consultoria
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Link to="/downloads">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  Acessar Materiais Gratuitos
-                </Button>
-              </Link>
             </div>
             
             <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border">
