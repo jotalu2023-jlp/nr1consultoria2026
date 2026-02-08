@@ -18,10 +18,15 @@ export const Hero = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-medium">
+            <a 
+              href="https://coral-marten-849774.hostingersite.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
+            >
               <Shield className="h-4 w-4" />
               Atualização NR1 - Riscos Psicossociais
-            </div>
+            </a>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
               Proteja sua empresa e seus{" "}
