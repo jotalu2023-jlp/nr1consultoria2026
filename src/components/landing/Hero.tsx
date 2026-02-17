@@ -64,13 +64,45 @@ export const Hero = () => {
           </div>
           
           <div className="hidden lg:block relative">
-            <div className="relative w-full max-w-lg mx-auto">
+            <div className="relative w-full max-w-lg mx-auto space-y-6">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl blur-3xl" />
               <img 
                 src={heroImage} 
                 alt="NR1 Riscos Psicossociais no Ambiente Corporativo - Antes e Depois" 
                 className="relative w-full rounded-2xl shadow-2xl border border-border object-cover"
               />
+              
+              <div className="relative space-y-4">
+                <div className="flex items-center gap-4 p-4 bg-primary/5 rounded-xl">
+                  <div className="p-3 bg-primary rounded-lg">
+                    <Shield className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Conformidade Legal</div>
+                    <div className="text-sm text-muted-foreground">NR1 Atualizada</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4 p-4 bg-accent/5 rounded-xl">
+                  <div className="p-3 bg-accent rounded-lg">
+                    <Brain className="h-6 w-6 text-accent-foreground" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Riscos Psicossociais</div>
+                    <div className="text-sm text-muted-foreground">Identificação e Gestão</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4 p-4 bg-secondary rounded-xl">
+                  <div className="p-3 bg-foreground rounded-lg">
+                    <Users className="h-6 w-6 text-background" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Bem-estar</div>
+                    <div className="text-sm text-muted-foreground">Clima Organizacional</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
