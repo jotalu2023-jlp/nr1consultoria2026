@@ -60,7 +60,7 @@ export const Footer = () => {
         <div className="border-t border-background/10 pt-8 text-center text-sm text-background/50">
           <p>© {new Date().getFullYear()} NR1 Consultoria. Todos os direitos reservados.</p>
           <p className="mt-2">
-            Desenvolvido por <span className="font-semibold">No&Pe - Empreendimentos</span> | (31) 99543-8782 | Belo Horizonte, MG
+            Desenvolvido por <a href="https://www.noepe.com.br/" target="_blank" rel="noopener noreferrer" className="font-semibold hover:text-background transition-colors">No&Pe - Empreendimentos</a> | (31) 99543-8782 | Belo Horizonte, MG
           </p>
         </div>
       </div>
