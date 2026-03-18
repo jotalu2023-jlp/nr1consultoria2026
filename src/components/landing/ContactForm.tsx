@@ -178,7 +178,7 @@ export const ContactForm = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">E-mail</h3>
-                    <p className="text-muted-foreground">jotalu2014@gmail.com</p>
+                    <p className="text-muted-foreground">consultoria@nr1consultoria.online</p>
                     <p className="text-sm text-muted-foreground">Respondemos em até 24h</p>
                   </div>
                 </div>

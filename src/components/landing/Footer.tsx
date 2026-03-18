@@ -46,7 +46,7 @@ export const Footer = () => {
             <h4 className="font-semibold mb-4">Contato</h4>
             <ul className="space-y-2 text-sm text-background/70">
               <li>(31) 99543-8782</li>
-              <li>jotalu2014@gmail.com</li>
+              <li>consultoria@nr1consultoria.online</li>
               <li>
                 <a href="https://www.nr1consultoria.online" target="_blank" rel="noopener noreferrer" className="hover:text-background transition-colors">
                   www.nr1consultoria.online
